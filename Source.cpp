@@ -1,12 +1,12 @@
 #include<iostream>
-
+#include<string.h>
 using namespace std;
 
 class raw {
 public:
 	bool* d;
 	int score = 0, width;
-	raw *last, * next;
+	raw *last = NULL, * next = NULL;
 
 	raw(int nculomn) {
 		width = nculomn;
@@ -24,13 +24,13 @@ public:
 class TerrisBoard {
 private:
 	raw* head, * tail, * here;
-	int high, width, * roof;
+	int high, width, *floor;
 
 public:
 	TerrisBoard(int nculomn, int nraw) {
 		high = nraw;
 		width = nculomn;
-		roof = new int[nculomn];
+		floor = new int[nculomn] {0};
 
 		head = new raw(nculomn);
 		here = head;
@@ -55,6 +55,8 @@ public:
 		}
 	}
 
+	bool** shape(char Case, int rotation);
+
 };
 
 int main() {
@@ -65,4 +67,44 @@ int main() {
 	TB.board_out();
 
 	return(0);
+}
+
+bool** TerrisBoard::shape(char Case, int rotation) {
+	bool** model = 0;
+	if (Case == 'T') {
+		if (rotation == 1) {}
+		else if (rotation == 2){}
+		else if (rotation == 3){}
+		else{}
+	}
+	else if (Case == 'L') {
+		if (rotation == 1) {}
+		else if (rotation == 2) {}
+		else if (rotation == 3) {}
+		else {}
+
+	}
+	else if (Case == 'J') {
+		if (rotation == 1) {}
+		else if (rotation == 2) {}
+		else if (rotation == 3) {}
+		else {}
+
+	}
+	else if (Case == 'S') {
+		if (rotation == 1) {}
+		else {}
+
+	}
+	else if (Case == 'Z') {
+		if (rotation == 1) {}
+		else {}
+
+	}
+	else if (Case == 'I') {
+		if (rotation == 1) {}
+		else {}
+
+	}
+	else{}
 }
