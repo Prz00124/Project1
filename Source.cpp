@@ -21,126 +21,167 @@ public:
 	}
 };
 
+class cube {
+public:
+	bool shape[3][3]{ 0 }, empty[3]{ 0 };
+	int lower[3]{ 0 }, higher[3]{ 0 };
+
+	void get_cube(bool k[3][3]) {
+		for (int i = 0; i < 3; i++) {
+			bool check = true;
+			for (int j = 0; j < 3; j++) {
+				if (check && k[i][j]){
+					lower[i] = j;
+					check = false;
+				}
+				else if ((!check) && (!k[i][j])) {
+					higher[i] = j - 1;
+				}
+				shape[i][j] = k[i][j];
+			}
+			if (check) {
+				empty[i] = true;
+			}
+		}
+	}
+};
+
 class blocks {
-private:
+public:
+	cube T1, T2, T3, T4, L1, L2, L3, L4, J1, J2, J3, J4, S1, S2, Z1, Z2;
 
-	bool T1[3][3] = {
-		{0,1,0,},
+	void init() {
+		bool t1[3][3] = {
+			{0,1,0,},
+			{1,1,0,},
+			{0,1,0,}
+		};
+		T1.get_cube(t1);
+
+		bool t2[3][3] = {
+			{0,1,0,},
+			{1,1,1,},
+			{0,0,0,}
+		};
+		T2.get_cube(t2);
+
+		bool t3[3][3] = {
+			{1,0,0,},
+			{1,1,0,},
+			{1,0,0,}
+		};
+		T3.get_cube(t3);
+
+		bool t4[3][3] = {
+			{1,1,1,},
+			{0,1,0,},
+			{0,0,0,}
+		};
+		T4.get_cube(t4);
+
+		bool l1[3][3] = {
+		{1,1,1,},
+		{1,0,0,},
+		{0,0,0,}
+		};
+		L1.get_cube(l1);
+
+		bool l2[3][3] = {
 		{1,1,0,},
-		{0,1,0,}
-	};
-
-	bool T2[3][3] = {
 		{0,1,0,},
+		{0,1,0,}
+		};
+		L2.get_cube(l2);
+
+		bool l3[3][3] = {
+		{0,0,1,},
 		{1,1,1,},
 		{0,0,0,}
-	};
+		};
+		L3.get_cube(l3);
 
-	bool T3[3][3] = {
+		bool l4[3][3] = {
+		{1,0,0,},
+		{1,0,0,},
+		{1,1,0,}
+		};
+		L4.get_cube(l4);
+
+		bool j1[3][3] = {
+		{1,0,0,},
+		{1,1,1,},
+		{0,0,0,}
+		};
+		J1.get_cube(j1);
+
+		bool j2[3][3] = {
+		{1,1,0,},
+		{1,0,0,},
+		{1,0,0,}
+		};
+		J2.get_cube(j2);
+
+		bool j3[3][3] = {
+		{1,1,1,},
+		{0,0,1,},
+		{0,0,0,}
+		};
+		J3.get_cube(j3);
+
+		bool j4[3][3] = {
+		{0,1,0,},
+		{0,1,0,},
+		{1,1,0,}
+		};
+		J4.get_cube(j4);
+
+		bool s1[3][3] = {
 		{1,0,0,},
 		{1,1,0,},
-		{1,0,0,}
-	};
+		{0,1,0,}
+		};
+		S1.get_cube(s1);
 
-	bool T4[3][3] = {
-		{1,1,1,},
-		{0,1,0,},
+		bool s2[3][3] = {
+		{0,1,1,},
+		{1,1,0,},
 		{0,0,0,}
-	};
+		};
+		S2.get_cube(s2);
 
-	bool L1[3][3] = {
-	{1,1,1,},
-	{1,0,0,},
-	{0,0,0,}
-	};
+		bool z1[3][3] = {
+		{0,1,0,},
+		{1,1,0,},
+		{1,0,0,}
+		};
+		Z1.get_cube(z1);
 
-	bool L2[3][3] = {
-	{1,1,0,},
-	{0,1,0,},
-	{0,1,0,}
-	};
-
-	bool L3[3][3] = {
-	{0,0,1,},
-	{1,1,1,},
-	{0,0,0,}
-	};
-
-	bool L4[3][3] = {
-	{1,0,0,},
-	{1,0,0,},
-	{1,1,0,}
-	};
-
-	bool J1[3][3] = {
-	{1,0,0,},
-	{1,1,1,},
-	{0,0,0,}
-	};
-
-	bool J2[3][3] = {
-	{1,1,0,},
-	{1,0,0,},
-	{1,0,0,}
-	};
-
-	bool J3[3][3] = {
-	{1,1,1,},
-	{0,0,1,},
-	{0,0,0,}
-	};
-
-	bool J4[3][3] = {
-	{0,1,0,},
-	{0,1,0,},
-	{1,1,0,}
-	};
-
-	bool S1[3][3] = {
-	{1,0,0,},
-	{1,1,0,},
-	{0,1,0,}
-	};
-
-	bool S2[3][3] = {
-	{0,1,1,},
-	{1,1,0,},
-	{0,0,0,}
-	};
-
-	bool Z1[3][3] = {
-	{0,1,0,},
-	{1,1,0,},
-	{1,0,0,}
-	};
-
-	bool Z2[3][3] = {
-	{1,1,0,},
-	{0,1,1,},
-	{0,0,0,}
-	};
-
-	bool L[4]{ 1 };
-	bool O[2][2]{ 1 };
-
-public:
+		bool z2[3][3] = {
+		{1,1,0,},
+		{0,1,1,},
+		{0,0,0,}
+		};
+		Z2.get_cube(z2);
+	}
+	
 	void through() {
-		print(T1);
-		print(T2);
-		print(T3);
-		print(T4);
-		print(L1);
-		print(L2);
-		print(L3);
-		print(L4);
-		print(J1);
-		print(J2);
-		print(J3);
-		print(J4);
-		print(S1);
-		print(S2);
-		print(Z1);
-		print(Z2);
+		print(T1.shape);
+		
+		print(T2.shape);
+		print(T3.shape);
+		print(T4.shape);
+		print(L1.shape);
+		print(L2.shape);
+		print(L3.shape);
+		print(L4.shape);
+		print(J1.shape);
+		print(J2.shape);
+		print(J3.shape);
+		print(J4.shape);
+		print(S1.shape);
+		print(S2.shape);
+		print(Z1.shape);
+		print(Z2.shape);
 		//print(L1);
 	}
 
@@ -164,6 +205,7 @@ public:
 	blocks block;
 
 	TerrisBoard(int nculomn, int nraw) {
+		block.init();
 		high = nraw;
 		width = nculomn;
 		floor = new int[nculomn] {0};
@@ -201,7 +243,8 @@ int main() {
 	cout << "hello world" << endl;
 
 	TerrisBoard TB(4, 5);
-	TB.block.through();
+
+	//TB.block.through();
 	//TB.board_out();
 
 	return(0);
