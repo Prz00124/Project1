@@ -20,6 +20,7 @@ public:
 		cout << endl;
 	}
 };
+//gives array[n_column] with raw score
 
 class cube {
 public:
@@ -44,7 +45,9 @@ public:
 			}
 		}
 	}
+	//initialize cubes with given value
 };
+//gives blank 3*3 matrix with empty[x],  lower bound[x], higher bound[x]
 
 class blocks {
 public:
@@ -163,6 +166,7 @@ public:
 		};
 		Z2.get_cube(z2);
 	}
+	//set values to block
 	
 	void through() {
 		print(T1.shape);
@@ -184,6 +188,7 @@ public:
 		print(Z2.shape);
 		//print(L1);
 	}
+	//print out all of 3*3 block in blocks by calling print defined below
 
 	void print(bool matrix[][3] ) {
 		for (int i = 2; i >= 0; i--) {
@@ -194,7 +199,9 @@ public:
 		}
 		cout << endl;
 	}
+	//print out single given block
 };
+//gives is the set of all kinds of blocks
 
 class TerrisBoard {
 private:
@@ -218,9 +225,10 @@ public:
 			here = here->next;
 		}
 		tail = here;
-		tail->next = head;
 		head->last = tail;
+		here = head;
 	}
+	//initialize board
 
 	void return_head() {
 		here = head;
@@ -233,10 +241,23 @@ public:
 		}
 	}
 
-	bool** shape(char Case, int rotation);
-	bool** init_shape(int x, int y);
+	bool cancel(raw *target) {
+		if (target->score == width) {
+			target->last->next = target->next;
+			target->next->last = target->last;
+			delete target;
+			return true;
+		}
+		else return false;
+	}
+	//delete a full raw
+
+	/*void put_in(char type[2], ) {
+
+	}*/
 
 };
+//the main structure
 
 int main() {
 	
@@ -249,84 +270,3 @@ int main() {
 
 	return(0);
 }
-
-
-/*
-bool** init_shape(int x, int y) {
-	bool** model = 0;
-	model = new bool* [x];
-	for (int i = 0; i < x; i++) {
-		model[i] = new bool[y];
-	}
-	return(model);
-}
-
-bool** TerrisBoard::shape(char Case, int rotation) {
-	bool** model = 0;
-	if (Case == 'T') {
-		if (rotation == 1) {
-			model = TerrisBoard::init_shape(3, 2);
-		}
-		else if (rotation == 2){
-			model = TerrisBoard::init_shape(2, 3);
-		}
-		else if (rotation == 3){
-			model = TerrisBoard::init_shape(3, 2);
-		}
-		else{
-			model = TerrisBoard::init_shape(2, 3);
-		}
-	}
-	else if (Case == 'L') {
-		if (rotation == 1) {
-			model = TerrisBoard::init_shape(2, 3);
-		}
-		else if (rotation == 2) {
-			model = TerrisBoard::init_shape(3, 2);
-		}
-		else if (rotation == 3) {
-			model = TerrisBoard::init_shape(2, 3);
-		}
-		else {
-			model = TerrisBoard::init_shape(3, 2);
-		}
-
-	}
-	else if (Case == 'J') {
-		if (rotation == 1) {
-			model = TerrisBoard::init_shape(2, 3);
-		}
-		else if (rotation == 2) {
-			model = TerrisBoard::init_shape(3, 2);
-		}
-		else if (rotation == 3) {
-			model = TerrisBoard::init_shape(2, 3);
-		}
-		else {
-			model = TerrisBoard::init_shape(3, 2);
-		}
-
-	}
-	else if (Case == 'S') {
-		if (rotation == 1) {
-			model = TerrisBoard::init_shape(3, 2);
-		}
-		else {
-			model = TerrisBoard::init_shape(2, 3);
-		}
-
-	}
-	else if (Case == 'Z') {
-		if (rotation == 1) {
-			model = TerrisBoard::init_shape(3, 2);
-		}
-		else {
-			model = TerrisBoard::init_shape(2, 3);
-		}
-
-	}
-	else{
-		model = TerrisBoard::init_shape(2,2);
-	}
-}
-*/
