@@ -233,6 +233,7 @@ public:
 	void return_head() {
 		here = head;
 	}
+	//return to 0 raw
 
 	void board_out() {
 		for (int i = 0; i < high + 2; i++) {
@@ -240,6 +241,7 @@ public:
 			here = here->next;
 		}
 	}
+	//print whole board
 
 	bool cancel(raw *target) {
 		if (target->score == width) {
@@ -252,9 +254,118 @@ public:
 	}
 	//delete a full raw
 
-	/*void put_in(char type[2], ) {
+	cube *char_to_cube(char input[2]) {
+		if (input[0] == 'T') {
+			if (input[1] == '1') {
+				return &block.T1;
+			}
+			else if (input[1] == '2') {
+				return &block.T2;
+			}
+			else if (input[1] == '3') {
+				return &block.T3;
+			}
+			else {
+				return &block.T4;
+			}
+		}
+		else if (input[0] == 'L') {
+			if (input[1] == '1') {
+				return &block.L1;
+			}
+			else if (input[1] == '2') {
+				return &block.L2;
+			}
+			else if (input[1] == '3') {
+				return &block.L3;
+			}
+			else {
+				return &block.L4;
+			}
+		}
+		else if (input[0] == 'J') {
+			if (input[1] == '1') {
+				return &block.J1;
+			}
+			else if (input[1] == '2') {
+				return &block.J2;
+			}
+			else if (input[1] == '3') {
+				return &block.J3;
+			}
+			else {
+				return &block.J4;
+			}
+		}
+		else if (input[0] == 'S') {
+			if (input[1] == '1') {
+				return &block.S1;
+			}
+			else {
+				return &block.S2;
+			}
+		}
+		else if (input[0] == 'Z') {
+			if (input[1] == '1') {
+				return &block.Z1;
+			}
+			else {
+				return &block.Z2;
+			}
+		}
+		else if (input[0] == 'I') {
 
-	}*/
+		}
+		else {
+
+		}
+	}
+	//decode char to cube type
+
+	int first_down(cube *in_cube, int start_point, int channel) {
+		int tem = 0, max = 0;
+		for (int i = start_point; i < start_point + channel; i++) {
+			tem = floor[i] - in_cube->lower[i];
+			if (tem>=max){
+				max = tem;
+			}
+		}
+
+		return max;
+	}
+	//1st cube down operater
+
+	int second_down(cube* in_cube, int start_point, int channel){
+
+	}
+	//2nd cube down operater
+
+	void paint(cube* in_cube, int start_point) {
+
+	}
+	//turn false to true with in_cube.shape on board
+
+	void put_in(char type[2], int x_1, int x_2) {
+		x_1 --;
+		int channel = 0, y = high;
+		cube* in_cube = char_to_cube(type);
+		while (!in_cube->empty[channel]) {
+			channel++;
+			if (channel == 3) break;
+		}
+
+		y = first_down(in_cube, x_1, channel);
+		if (x_2) {
+
+		}
+		//if step requires 2nd shift
+		else {
+
+		}
+		//if not
+
+
+	}
 
 };
 //the main structure
