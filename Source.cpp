@@ -15,7 +15,8 @@ public:
 
 	void print() {
 		for (int i = 0; i < width; i++) {
-			cout << d[i] << " ";
+			if (d[i]) cout << 1 << " ";
+			else cout << 0 << " ";
 		}
 		cout << endl;
 	}
@@ -51,6 +52,16 @@ public:
 		}
 	}
 	//initialize cubes with given value
+
+	void print() {
+		for (int i = 2; i >= 0; i--) {
+			for (int j = 0; j < 3; j++) {
+				cout << shape[j][i] << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
 };
 //gives blank 3*3 matrix with empty[x],  lower bound[x], higher bound[x]
 
@@ -224,7 +235,7 @@ public:
 
 		head = new raw(nculomn);
 		here = head;
-		for (int i = 0; i < nraw; i++) {
+		for (int i = 0; i < nraw-1; i++) {
 			here->next = new raw(nculomn);
 			(here->next)->last = here;
 			here = here->next;
@@ -257,10 +268,15 @@ public:
 	//put here pointer to 0 and then move it to y raw
 
 	void board_out() {
-		for (int i = 0; i < high + 2; i++) {
-			here-> print();
-			here = here->next;
+		return_head();
+		here = here->last;
+		while (!(here == head)) {
+			here->print();
+			here = here->last;
 		}
+		here->print();
+
+		cout << endl;
 	}
 	//print whole board
 
@@ -376,26 +392,42 @@ public:
 	//2nd cube down operater
 
 	void paint(cube* in_cube, int x, int y) {
+		go_to_y(y);
 
+		for(int j=0;j<3;j++){
+			for (int i = 0; i < 3; i++) {
+				if (in_cube->shape[i][j]) {
+					here->d[x + i] = true;
+					here->score ++;
+				}
+			}
+			here = here->next;
+		}
 	}
 	//turn false to true with in_cube.shape on board
 
+
 	void put_in(char type[2], int x_1, int x_2) {
-		x_1 --;
+		//x_1 --;
+		//cout << "get x1 x2: " << x_1 << " " << x_2<<endl;
+
 		int channel = 0, y = high;
 		cube* in_cube = char_to_cube(type);
 		while (!in_cube->empty[channel]) {
 			channel++;
 			if (channel == 3) break;
 		}
+		//cout << "catch cube: " << endl;
+		in_cube->print();
+		//cout << "channel: " << channel << endl;
 
 		y = first_down(in_cube, x_1, channel);
+		//cout << "1st y: " << y << endl;
 		if (x_2) {
 			x_1 += x_2;
 			y = second_down(in_cube, x_1, y, channel);
 		}
 		//if step requires 2nd shift, then update y
-
 		paint(in_cube, x_1, y);
 	}
 
@@ -405,12 +437,15 @@ public:
 int main() {
 	
 	cout << "hello world" << endl;
+	char test[3];
+	cin >> test;
 
 	TerrisBoard TB(4, 5);
 
 	//TB.block.through();
 	TB.board_out();
-	//TB.put_in("T1", 1, 2);
+	TB.put_in(test, 0, 0);
+	TB.board_out();
 
 	return(0);
 }
