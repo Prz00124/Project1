@@ -29,20 +29,25 @@ public:
 
 	void get_cube(bool k[3][3]) {
 		for (int i = 0; i < 3; i++) {
-			bool check = true;
+			bool check = true;//to see if there is any true value in this column
 			for (int j = 0; j < 3; j++) {
 				if (check && k[i][j]){
-					lower[i] = j;
-					check = false;
+					lower[i] = j;  //when 1st time met true value,
+					check = false; //set the index to lower
 				}
-				else if ((!check) && (!k[i][j])) {
-					higher[i] = j - 1;
+				else if ((!check) && (!k[i][j])) {//when when met false again before end of column,
+					higher[i] = j - 1;            //set the index to higher
 				}
 				shape[i][j] = k[i][j];
 			}
-			if (check) {
+			if (check) { //no true value in this column
 				empty[i] = true;
-			}
+			}/*
+			else { //there is some true value in this column
+				if (lower[i]>max){
+					max = lower[i];
+				}
+			}*/
 		}
 	}
 	//initialize cubes with given value
@@ -206,26 +211,27 @@ public:
 class TerrisBoard {
 private:
 	raw* head, * tail, * here;
-	int high, width, *floor;
-
-public:
+	int high, width, *floor, half = 0;
 	blocks block;
 
+public:
 	TerrisBoard(int nculomn, int nraw) {
 		block.init();
 		high = nraw;
+		half = high / 2;
 		width = nculomn;
 		floor = new int[nculomn] {0};
 
 		head = new raw(nculomn);
 		here = head;
-		for (int i = 0; i < nculomn+1; i++) {
+		for (int i = 0; i < nraw; i++) {
 			here->next = new raw(nculomn);
 			(here->next)->last = here;
 			here = here->next;
 		}
 		tail = here;
 		head->last = tail;
+		tail->next = head;
 		here = head;
 	}
 	//initialize board
@@ -233,7 +239,22 @@ public:
 	void return_head() {
 		here = head;
 	}
-	//return to 0 raw
+	//return here pointer to 0 raw
+
+	void go_to_y(int y) {
+		return_head();
+		if (y > half) {
+			for (int i = 0; i < (high - y); i++) {
+				here = here->last;
+			}
+		}
+		else {
+			for (int i = 0; i < y; i++) {
+				here = here->next;
+			}
+		}
+	}
+	//put here pointer to 0 and then move it to y raw
 
 	void board_out() {
 		for (int i = 0; i < high + 2; i++) {
@@ -335,12 +356,26 @@ public:
 	}
 	//1st cube down operater
 
-	int second_down(cube* in_cube, int start_point, int channel){
+	int second_down(cube* in_cube, int x, int y, int channel){
+		int tem[3]{ 0 }, min = 80;
+		go_to_y(y);
 
+		for (int i = 0; i < channel; i++) {
+			raw* there = here;
+			tem[i] += in_cube->lower[i];
+			while ((!there->next->d[x+i])&&(y>tem[i])) {
+				tem[i]++;
+				there = there->next;
+			}
+			if (tem[i] < min) {
+				min = tem[i];
+			}
+		}
+		return(y - min);
 	}
 	//2nd cube down operater
 
-	void paint(cube* in_cube, int start_point) {
+	void paint(cube* in_cube, int x, int y) {
 
 	}
 	//turn false to true with in_cube.shape on board
@@ -356,15 +391,12 @@ public:
 
 		y = first_down(in_cube, x_1, channel);
 		if (x_2) {
-
+			x_1 += x_2;
+			y = second_down(in_cube, x_1, y, channel);
 		}
-		//if step requires 2nd shift
-		else {
+		//if step requires 2nd shift, then update y
 
-		}
-		//if not
-
-
+		paint(in_cube, x_1, y);
 	}
 
 };
@@ -377,7 +409,8 @@ int main() {
 	TerrisBoard TB(4, 5);
 
 	//TB.block.through();
-	//TB.board_out();
+	TB.board_out();
+	//TB.put_in("T1", 1, 2);
 
 	return(0);
 }
