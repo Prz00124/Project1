@@ -15,10 +15,11 @@ public:
 
 	void print() {
 		for (int i = 0; i < width; i++) {
-			if (d[i]) cout << 1 << " ";
-			else cout << 0 << " ";
+			/*if (d[i]) cout << 1 << " ";
+			else cout << 0 << " ";*/
+			cout << d[i] << " ";
 		}
-		cout << endl;
+		cout <<" :"<< score << endl;
 	}
 };
 //gives array[n_column] with raw score
@@ -269,6 +270,10 @@ public:
 
 	void board_out() {
 		return_head();
+		for (int i = 0; i < width; i++) {
+			cout << floor[i] << " ";
+		}
+		cout << " <-floor " << endl << endl;
 		here = here->last;
 		while (!(here == head)) {
 			here->print();
@@ -276,15 +281,25 @@ public:
 		}
 		here->print();
 
-		cout << endl;
+		cout << "~~~~~~~~~~~~~~~~~~~" << endl;
 	}
 	//print whole board
 
-	bool cancel(raw *target) {
+	void add_raw() {
+		here = new raw(width);
+		here->next = head;
+		here->last = tail;
+		head->last = here;
+		tail->next = here;
+	}
+
+	bool cancel_rule(raw *target) {
 		if (target->score == width) {
 			target->last->next = target->next;
 			target->next->last = target->last;
 			delete target;
+			add_raw();
+
 			return true;
 		}
 		else return false;
@@ -406,6 +421,12 @@ public:
 	}
 	//turn false to true with in_cube.shape on board
 
+	void refresh_floor(int y) {
+		go_to_y(y);
+		for (int i = 0; i < 3; i++) {
+			here->
+		}
+	}
 
 	void put_in(char type[2], int x_1, int x_2) {
 		//x_1 --;
@@ -444,7 +465,7 @@ int main() {
 
 	//TB.block.through();
 	TB.board_out();
-	TB.put_in(test, 0, 0);
+	TB.put_in(test, 0, 1);
 	TB.board_out();
 
 	return(0);
