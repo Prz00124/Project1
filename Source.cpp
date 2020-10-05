@@ -27,7 +27,7 @@ public:
 class cube {
 public:
 	bool shape[3][3]{ 0 }, empty[3]{ 0 };
-	int lower[3]{ 0 }, higher[3]{ 0 };
+	int lower[3]{ 0 }, higher[3]{ 3,3,3 };
 
 	void get_cube(bool k[3][3]) {
 		for (int i = 0; i < 3; i++) {
@@ -38,7 +38,9 @@ public:
 					check = false; //set the index to lower
 				}
 				else if ((!check) && (!k[i][j])) {//when when met false again before end of column,
-					higher[i] = j - 1;            //set the index to higher
+					if (higher[i] == 3) {
+						higher[i] = j;            //set the index to higher
+					}
 				}
 				shape[i][j] = k[i][j];
 			}
@@ -61,6 +63,9 @@ public:
 			}
 			cout << endl;
 		}
+		cout << "empty: " << empty[0] << " " << empty[1] << " " << empty[2] << endl;
+		cout << "lower: " << lower[0] << " " << lower[1] << " " << lower[2] << endl;
+		cout << "highr: " << higher[0] << " " << higher[1] << " " << higher[2] << endl;
 		cout << endl;
 	}
 };
@@ -293,19 +298,6 @@ public:
 		tail->next = here;
 	}
 
-	bool cancel_rule(raw *target) {
-		if (target->score == width) {
-			target->last->next = target->next;
-			target->next->last = target->last;
-			delete target;
-			add_raw();
-
-			return true;
-		}
-		else return false;
-	}
-	//delete a full raw
-
 	cube *char_to_cube(char input[2]) {
 		if (input[0] == 'T') {
 			if (input[1] == '1') {
@@ -376,13 +368,14 @@ public:
 
 	int first_down(cube *in_cube, int start_point, int channel) {
 		int tem = 0, max = 0;
-		for (int i = start_point; i < start_point + channel; i++) {
-			tem = floor[i] - in_cube->lower[i];
+//		cout << "1st_down | x: " << start_point << " channel: " << channel << endl;
+		for (int i = 0; i < channel; i++) {
+			tem = floor[start_point + i] - in_cube->lower[i];
 			if (tem>=max){
 				max = tem;
 			}
 		}
-
+//		cout << "1st_down return: " << max << endl;
 		return max;
 	}
 	//1st cube down operater
@@ -421,10 +414,65 @@ public:
 	}
 	//turn false to true with in_cube.shape on board
 
-	void refresh_floor(int y) {
+	bool cancel_rule(raw* target) {
+		if (target->score == width) {
+			here = here->next;
+			target->last->next = target->next;
+			target->next->last = target->last;
+			delete target;
+			add_raw();
+
+			return true;
+		}
+		else return false;
+	}
+	//delete a full raw
+
+	int cancel_step(int y) {
+		int tem = 0;
 		go_to_y(y);
 		for (int i = 0; i < 3; i++) {
-			here->
+			if (cancel_rule(here)) {
+				tem++;
+			}
+			else {
+				here = here->next;
+			}
+		}
+		
+		if (tem) cout << "did canceld" << endl;
+		return(tem);
+	}
+	//do 3 cancel operater from y
+
+	int find_floor(int x, int start_point) {
+		go_to_y(start_point);
+		int tem = -1;
+		while ((!here->d[x]) && !(here == head)) {
+			here = here->last;
+			tem++;
+		}
+		return(tem);
+	}
+
+	void refresh_floor(cube* in_cube ,int x, int y, int channel, int n_canceled) {
+		for (int i = 0; i < channel; i++) {
+			if (floor[x + i] < (y + in_cube->higher[i])) {
+				floor[x + i] = y + in_cube->higher[i];
+				
+			}
+		}
+
+		if(n_canceled){
+			for (int i = 0; i < width; i++) {
+				if (floor[i] > y+3) {
+					floor[i] -= n_canceled;
+				}
+				else if (floor[i] > y) {
+					int tem = find_floor(i, floor[i]);
+					floor[i] -= tem;
+				}
+			}
 		}
 	}
 
@@ -432,7 +480,7 @@ public:
 		//x_1 --;
 		//cout << "get x1 x2: " << x_1 << " " << x_2<<endl;
 
-		int channel = 0, y = high;
+		int channel = 0, y = high, canceled = 0;
 		cube* in_cube = char_to_cube(type);
 		while (!in_cube->empty[channel]) {
 			channel++;
@@ -450,6 +498,10 @@ public:
 		}
 		//if step requires 2nd shift, then update y
 		paint(in_cube, x_1, y);
+
+		canceled = cancel_step(y);
+
+		refresh_floor(in_cube, x_1, y, channel, canceled);
 	}
 
 };
@@ -467,6 +519,9 @@ int main() {
 	TB.board_out();
 	TB.put_in(test, 0, 1);
 	TB.board_out();
+	TB.put_in(test, 0, 1);
+	TB.board_out();
+
 
 	return(0);
 }
