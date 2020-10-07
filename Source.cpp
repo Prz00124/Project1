@@ -239,17 +239,21 @@ public:
 		width = nculomn;
 		floor = new int[nculomn] {0};
 
+		int k = 0;
 		head = new raw(nculomn);
+		//cout << "create a new raw " << ++k << endl;
 		here = head;
 		for (int i = 0; i < nraw-1; i++) {
+			//cout << "create a new raw " << ++k << endl;
 			here->next = new raw(nculomn);
 			(here->next)->last = here;
 			here = here->next;
 		}
+
 		tail = here;
 		head->last = tail;
 		tail->next = head;
-		here = head;
+		//here = head;
 	}
 	//initialize board
 
@@ -273,13 +277,18 @@ public:
 	}
 	//put here pointer to 0 and then move it to y raw
 
-	void board_out() {
-		return_head();
+	void floor_out() {
 		for (int i = 0; i < width; i++) {
 			cout << floor[i] << " ";
 		}
 		cout << " <-floor " << endl << endl;
-		here = here->last;
+	}
+
+	void board_out() {
+		return_head();
+		floor_out();
+
+		here = tail;
 		while (!(here == head)) {
 			here->print();
 			here = here->last;
@@ -296,6 +305,7 @@ public:
 		here->last = tail;
 		head->last = here;
 		tail->next = here;
+		tail = here;
 	}
 
 	cube *char_to_cube(char input[2]) {
@@ -381,20 +391,28 @@ public:
 	//1st cube down operater
 
 	int second_down(cube* in_cube, int x, int y, int channel){
-		int tem[3]{ 0 }, min = 80;
+		int tem[3]{ 0 }, min = 64, y_plus = 0;
 		go_to_y(y);
+//		cout << "2nd input x: " << x << " y: " << y << endl;
 
 		for (int i = 0; i < channel; i++) {
 			raw* there = here;
-			tem[i] += in_cube->lower[i];
-			while ((!there->next->d[x+i])&&(y>tem[i])) {
-				tem[i]++;
+			for (int j = 0; j < in_cube->lower[i]; j++) {
 				there = there->next;
 			}
+			y_plus = y + in_cube->lower[i];
+			while ((!there->last->d[x+i])&&(y_plus >tem[i])) {
+				/*there->print();
+				cout << endl;*/
+				tem[i]++;
+				there = there->last;
+			}
+
 			if (tem[i] < min) {
 				min = tem[i];
 			}
 		}
+		cout << endl;
 		return(y - min);
 	}
 	//2nd cube down operater
@@ -416,12 +434,20 @@ public:
 
 	bool cancel_rule(raw* target) {
 		if (target->score == width) {
-			here = here->next;
+			
 			target->last->next = target->next;
 			target->next->last = target->last;
-			delete target;
-			add_raw();
+			if (target == head) {
+				head = target->next;
+			}
+			else if (target == tail) {
+				tail = target->last;
+			}
 
+			add_raw();
+			here = target->next;
+			delete target;
+			
 			return true;
 		}
 		else return false;
@@ -429,6 +455,7 @@ public:
 	//delete a full raw
 
 	int cancel_step(int y) {
+		cout << "cancel_step input y: " << y << endl;
 		int tem = 0;
 		go_to_y(y);
 		for (int i = 0; i < 3; i++) {
@@ -452,27 +479,32 @@ public:
 			here = here->last;
 			tem++;
 		}
+		if (here == head && !here->d[x]) tem++;
 		return(tem);
 	}
 
 	void refresh_floor(cube* in_cube ,int x, int y, int channel, int n_canceled) {
+//		cout << "refresh_floor input x: " << x << " y: " << y << " channel: " << channel << " n_canceled: " << n_canceled << endl;
 		for (int i = 0; i < channel; i++) {
 			if (floor[x + i] < (y + in_cube->higher[i])) {
 				floor[x + i] = y + in_cube->higher[i];
-				
 			}
 		}
+
+		//floor_out();
 
 		if(n_canceled){
 			for (int i = 0; i < width; i++) {
 				if (floor[i] > y+3) {
 					floor[i] -= n_canceled;
 				}
-				else if (floor[i] > y) {
+				else if (floor[i] >= y) {
+//					cout << 1;
 					int tem = find_floor(i, floor[i]);
 					floor[i] -= tem;
 				}
 			}
+			cout << endl;
 		}
 	}
 
@@ -499,6 +531,11 @@ public:
 		//if step requires 2nd shift, then update y
 		paint(in_cube, x_1, y);
 
+		/*cout << "tail: ";
+		tail->print();
+		cout << "head: ";
+		head->print();*/
+
 		canceled = cancel_step(y);
 
 		refresh_floor(in_cube, x_1, y, channel, canceled);
@@ -510,18 +547,20 @@ public:
 int main() {
 	
 	cout << "hello world" << endl;
+	int x = 0, y = 0;
 	char test[3];
 	cin >> test;
 
-	TerrisBoard TB(4, 5);
+	TerrisBoard TB(4, 10);
 
 	//TB.block.through();
 	TB.board_out();
-	TB.put_in(test, 0, 1);
-	TB.board_out();
-	TB.put_in(test, 0, 1);
-	TB.board_out();
-
+	for (int i = 0; i < 4; i++) {
+		TB.put_in(test, 0, 2);
+		TB.board_out();
+		TB.put_in(test, 0, 0);
+		TB.board_out();
+	}
 
 	return(0);
 }
