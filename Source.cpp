@@ -24,6 +24,7 @@ public:
 };
 //gives array[n_column] with raw score
 
+
 class cube {
 public:
 	bool shape[4][4]{ 0 }, empty[4]{ 0 };
@@ -250,7 +251,6 @@ public:
 	//print out single given block
 };
 //gives is the set of all kinds of blocks
-
 
 
 class TerrisBoard{
@@ -572,6 +572,7 @@ public:
 
 };
 //the main structure
+
 
 int main() {
 	
