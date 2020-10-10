@@ -8,7 +8,7 @@ using namespace std;
 class cube {
 public:
 	bool shape[4][4]{ 0 }, empty[4]{ 0 };
-	int lower[4]{ 0 }, higher[4]{ 4,4,4 }, channel = 0, max = 0;
+	int lower[4]{ 0 }, higher[4]{ 4,4,4,4 }, channel = 0, max = 0;
 
 	void get_cube(bool k[4][4]) {
 		for (int i = 0; i < 4; i++) {
@@ -252,10 +252,10 @@ public:
 	}
 
 	void to_file(ofstream *exit) {
-		for (int i = 0; i < width; i++) {
+		for (int i = 0; i < width-1; i++) {
 			*exit << d[i] << " ";
 		}
-		*exit << endl;
+		*exit << d[width - 1] << endl;
 	}
 };
 //gives array[n_column] with raw score
@@ -554,6 +554,10 @@ public:
 
 	void board_to_file(ofstream *exit) {
 		here = tail;
+		here = here->last;
+		here = here->last;
+		here = here->last;
+
 		while (!(here == head)) {
 			here->to_file(exit);
 			here = here->last;
@@ -568,7 +572,6 @@ public:
 
 		int y = high, canceled = 0;
 		cube* in_cube = char_to_cube(type);
-		//cout << "catch cube: " << endl;
 
 		//in_cube->print();
 		//cout << "channel: " << channel << endl;
@@ -604,7 +607,7 @@ int main(int argc, char* argv[]) {
 	x_1 = stoi(temp);
 	temp = strtok_s(NULL, " ", &slices);
 	x_2 = stoi(temp);
-	TerrisBoard TB(x_2, x_1);
+	TerrisBoard TB(x_2, x_1+3);
 
 	
 	while (input_file) {
@@ -624,10 +627,10 @@ int main(int argc, char* argv[]) {
 	}
 	
 	input_file.close();
-
 	TB.board_out();
 
-	ofstream output_file("kkk.final");
+	//ofstream output_file("106020013 proj1.final");
+	ofstream output_file("106020013 proj1.txt");
 	TB.board_to_file(&output_file);
 	output_file.close();
 
