@@ -409,7 +409,7 @@ private:
 				min = tem[i];
 			}
 		}
-		cout << endl;
+		//cout << endl;
 		return(y - min);
 	}
 	//2nd cube down operater
@@ -502,7 +502,7 @@ private:
 					floor[i] -= tem;
 				}
 			}
-			cout << endl;
+			//cout << endl;
 		}
 	}
 	//update floor array
@@ -549,13 +549,13 @@ public:
 	//print out whole board
 
 	void put_in(char type[2], int x_1, int x_2) {
-		cout << type<<" "<< "get x1 x2: " << x_1 << " " << x_2<<endl;
+		//cout << type<<" "<< "get x1 x2: " << x_1 << " " << x_2<<endl;
 
 		int y = high, canceled = 0;
 		cube* in_cube = char_to_cube(type);
 		//cout << "catch cube: " << endl;
 
-		in_cube->print();
+		//in_cube->print();
 		//cout << "channel: " << channel << endl;
 
 		y = first_down(in_cube, x_1, in_cube->channel);
@@ -595,14 +595,14 @@ int main(int argc, char* argv[]) {
 	while (input_file) {
 		input_file.getline(line, 16);
 		word = strtok_s(line, " ", &slices);
-		cout << word;
 		if (word[0] == 'E') break;
 		else {
+			//cout << word;
 			temp = strtok_s(NULL, " ", &slices);
 			x_1 = stoi(temp);
 			temp = strtok_s(NULL, " ", &slices);
 			x_2 = stoi(temp);
-			cout << " " << x_1 << " " << x_2 << endl;
+			//cout << " " << x_1 << " " << x_2 << endl;
 			TB.put_in(word, x_1-1, x_2);
 		}
 	}
