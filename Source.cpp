@@ -1,28 +1,9 @@
 #include<iostream>
-#include<string.h>
+#include<string>
+#include<fstream>
+#include<stdlib.h>
 using namespace std;
 
-class raw {
-public:
-	bool* d;
-	int score = 0, width;
-	raw *last = NULL, * next = NULL;
-
-	raw(int nculomn) {
-		width = nculomn;
-		d = new bool[nculomn]{ false };
-	}
-
-	void print() {
-		for (int i = 0; i < width; i++) {
-			/*if (d[i]) cout << 1 << " ";
-			else cout << 0 << " ";*/
-			cout << d[i] << " ";
-		}
-		cout <<" :"<< score << endl;
-	}
-};
-//gives array[n_column] with raw score
 
 class cube {
 public:
@@ -252,6 +233,28 @@ public:
 //gives is the set of all kinds of blocks
 
 
+class raw {
+public:
+	bool* d;
+	int score = 0, width;
+	raw* last = NULL, * next = NULL;
+
+	raw(int nculomn) {
+		width = nculomn;
+		d = new bool[nculomn] { false };
+	}
+
+	void print() {
+		for (int i = 0; i < width; i++) {
+			/*if (d[i]) cout << 1 << " ";
+			else cout << 0 << " ";*/
+			cout << d[i] << " ";
+		}
+		cout << " :" << score << endl;
+	}
+};
+//gives array[n_column] with raw score
+
 
 class TerrisBoard{
 private:
@@ -448,11 +451,11 @@ private:
 	}
 	//delete a full raw
 
-	int cancel_step(int y) {
-		cout << "cancel_step input y: " << y << endl;
+	int cancel_step(int y, int max) {
+//		cout << "cancel_step input y: " << y << endl;
 		int tem = 0;
 		go_to_y(y);
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < max; i++) {
 			if (cancel_rule(here)) {
 				tem++;
 			}
@@ -461,7 +464,7 @@ private:
 			}
 		}
 
-		if (tem) cout << "did canceld" << endl;
+		//if (tem) cout << "did canceld" << endl;
 		return(tem);
 	}
 	//do 4 cancel operater from y
@@ -546,7 +549,7 @@ public:
 	//print out whole board
 
 	void put_in(char type[2], int x_1, int x_2) {
-		//cout << "get x1 x2: " << x_1 << " " << x_2<<endl;
+		cout << type<<" "<< "get x1 x2: " << x_1 << " " << x_2<<endl;
 
 		int y = high, canceled = 0;
 		cube* in_cube = char_to_cube(type);
@@ -564,7 +567,7 @@ public:
 
 		paint(in_cube, x_1, y);
 
-		canceled = cancel_step(y);
+		canceled = cancel_step(y, in_cube->max);
 
 		refresh_floor(in_cube, x_1, y, in_cube->channel, canceled);
 	}
@@ -573,21 +576,40 @@ public:
 };
 //the main structure
 
-int main() {
-	
+int main(int argc, char* argv[]) {
 	cout << "hello world" << endl;
-	int x = 0, y = 0;
-	char test[3];
 
-	TerrisBoard TB(6, 10);
+	char line[16], *slices = NULL, *word, *temp;
+	int x_1 = 0, x_2 = 0;
+	ifstream input_file(argv[1]);
+	if (!input_file) cout << "load input file failed" << endl;
+	
+	input_file.getline(line, 16);
+	temp = strtok_s(line, " ", &slices);
+	x_1 = stoi(temp);
+	temp = strtok_s(NULL, " ", &slices);
+	x_2 = stoi(temp);
+	TerrisBoard TB(x_2, x_1);
+
+	
+	while (input_file) {
+		input_file.getline(line, 16);
+		word = strtok_s(line, " ", &slices);
+		cout << word;
+		if (word[0] == 'E') break;
+		else {
+			temp = strtok_s(NULL, " ", &slices);
+			x_1 = stoi(temp);
+			temp = strtok_s(NULL, " ", &slices);
+			x_2 = stoi(temp);
+			cout << " " << x_1 << " " << x_2 << endl;
+			TB.put_in(word, x_1-1, x_2);
+		}
+	}
+	
+	input_file.close();
 
 	TB.board_out();
-
-	while (1) {
-		cin >> test >> x >> y;
-		TB.put_in(test, x, y);
-		TB.board_out();
-	}
 
 	return(0);
 }
