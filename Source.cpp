@@ -246,11 +246,16 @@ public:
 
 	void print() {
 		for (int i = 0; i < width; i++) {
-			/*if (d[i]) cout << 1 << " ";
-			else cout << 0 << " ";*/
 			cout << d[i] << " ";
 		}
 		cout << " :" << score << endl;
+	}
+
+	void to_file(ofstream *exit) {
+		for (int i = 0; i < width; i++) {
+			*exit << d[i] << " ";
+		}
+		*exit << endl;
 	}
 };
 //gives array[n_column] with raw score
@@ -534,7 +539,6 @@ public:
 	//initialize the board
 
 	void board_out() {
-		return_head();
 		floor_out();
 
 		here = tail;
@@ -547,6 +551,17 @@ public:
 		cout << "~~~~~~~~~~~~~~~~~~~" << endl;
 	}
 	//print out whole board
+
+	void board_to_file(ofstream *exit) {
+		here = tail;
+		while (!(here == head)) {
+			here->to_file(exit);
+			here = here->last;
+		}
+		here->to_file(exit);
+
+		cout << "~~~~~~~~~~~~~~~~~~~" << endl;
+	}
 
 	void put_in(char type[2], int x_1, int x_2) {
 		//cout << type<<" "<< "get x1 x2: " << x_1 << " " << x_2<<endl;
@@ -604,12 +619,17 @@ int main(int argc, char* argv[]) {
 			x_2 = stoi(temp);
 			//cout << " " << x_1 << " " << x_2 << endl;
 			TB.put_in(word, x_1-1, x_2);
+			//TB.board_out();
 		}
 	}
 	
 	input_file.close();
 
 	TB.board_out();
+
+	ofstream output_file("kkk.final");
+	TB.board_to_file(&output_file);
+	output_file.close();
 
 	return(0);
 }
